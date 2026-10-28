@@ -1,5 +1,4 @@
 import MainNews from "@/component/MainNews";
-
 import MostRead from "@/component/MostRead";
 import Newscard from "@/component/Newscard";
 
@@ -10,6 +9,7 @@ export interface ArticleT {
   category: string;
   imageUrl: string;
   imageAlt: string;
+  firstPublished?: string;
 }
 
 export interface OtherSectionDataT {
@@ -28,7 +28,7 @@ export interface NewsApiResponseT {
 
 export default async function Home() {
   const res = await fetch("https://news-api-v2.vercel.app/api/news/sections", {
-    cache: "no-store", // প্রয়োজন অনুযায়ী 'force-cache' বা 'no-store' ব্যবহার করতে পারেন
+    cache: "no-store",
   });
 
   const data: NewsApiResponseT = await res.json();
@@ -39,8 +39,6 @@ export default async function Home() {
 
   return (
     <div>
-      
-
       <div className="max-w-7xl mx-auto mt-5 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 px-4">
         {/* বামের মেইন কন্টেন্ট এলাকা (২ কলাম) */}
         <div className="lg:col-span-2">
@@ -53,9 +51,11 @@ export default async function Home() {
                   {othersectiondata.title}
                 </h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                  {othersectiondata.articles?.map((news, ind) => (
-                    <Newscard key={news.id || ind} news={news} />
-                  ))}
+                  {othersectiondata.articles
+                    ?.filter((n): n is ArticleT => Boolean(n))
+                    .map((news, ind) => (
+                      <Newscard key={news?.id ?? ind} news={news} />
+                    ))}
                 </div>
               </div>
             ))}

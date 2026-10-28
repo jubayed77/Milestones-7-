@@ -8,10 +8,12 @@ interface NewsCardT {
     category: string;
     imageUrl: string;
     imageAlt: string;
-    firstPublished: string;
+    firstPublished?: string;
 }
 
-const Newscard = ({ news }: { news: NewsCardT }) => {
+const Newscard = ({ news }: { news?: NewsCardT }) => {
+    if (!news) return null;
+
     return (
         <div className="card bg-base-100 shadow-sm">
             <Link href={`/news/${news.id}`} className="block">
@@ -27,7 +29,9 @@ const Newscard = ({ news }: { news: NewsCardT }) => {
                     <p className="text-red-700 font-semibold">{news.category}</p>
                     <h2 className="card-title">{news.title}</h2>
                     <p>{news.description}</p>
-                    <p className="text-xs">{news.firstPublished}</p>
+                    {news.firstPublished && (
+                        <p className="text-xs">{news.firstPublished}</p>
+                    )}
                 </div>
             </Link>
         </div>
